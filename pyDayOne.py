@@ -5,8 +5,6 @@
 # On 1/11/2013
 # GNU GPL License. Have fun!
 
-import wx
-from wx import *
 import os
 import os.path
 import sys
@@ -15,11 +13,19 @@ import datetime
 import time
 import uuid
 from plistlib import readPlist, writePlist
+import wx
 
 ID_SAVE = 1
 ID_DELETE = 2
 ID_NEW = 3
 datetime_format = '%Y-%m-%dT%H:%M:%SZ'
+
+
+def resource_dir():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
 
 
 def _emptyEntry():
@@ -36,7 +42,7 @@ class MyFrame(wx.Frame):
     directory = ''
 
     def __init__(self, parent, id, title):
-        from win32com.shell import shell, shellcon
+        from win32com.shell import shell, shellcon  # pylint: disable=E0611, E0401
         saveFileName = 'DayOne.sav'
         try:
             saveFileDir = os.path.join(shell.SHGetFolderPath(
@@ -95,7 +101,8 @@ class MyFrame(wx.Frame):
 
         wx.Frame.__init__(self, parent, id, title,
                           wx.DefaultPosition, (800, 800))
-        fn = os.path.join(os.path.dirname(sys.argv[0]), 'pyDayOne.ico')
+        fn = os.path.join(resource_dir(), 'pyDayOne.ico')
+
         self.icon = wx.Icon(fn, wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
